@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+
+% --- Packages ---
+\usepackage[usenames, dvipsnames]{color} % Cool colors
+\usepackage{enumerate, amsmath, amsthm, amssymb, mathrsfs, algorithm, algpseudocode, fontawesome, pifont, subfig, fullpage, csquotes, dashrule, tikz, bbm, booktabs, bm, hyperref, wasysym}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage[numbers]{natbib}
+\usepackage[normalem]{ulem}
+
+% --- Misc. ---
+\hbadness=10000 % No "underfull hbox" messages.
+\setlength{\parindent}{0pt} % Removes all indentation.
+
+% -- Commands --
+\input{commands}
+
+% Nice coloring of references.
+\usepackage{hyperref}
+\hypersetup{               
+    colorlinks=true,              
+    breaklinks=true,               
+    urlcolor=dblue,
+    linkcolor=dgreen,
+    linkbordercolor=dgreen,
+    citecolor=dblue,
+    citebordercolor=dblue
+}
+
+
+
+\title{RLDM 2019 Notes \\ \Large{Montreal, Canada}}
+\author{David Abel\footnote{\durl{http://david-abel.github.io}} \\ \durl{david_abel@brown.edu}}
+\date{July 2019}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+
+This document contains notes I took during the events I managed to make it to at RLDM 2019 in Montreal, Canada. Please feel free to distribute it and shoot me an email at \durl{david_abel@brown.edu} if you find any typos or other items that need correcting. 
+
+
+\section{Conference Highlights}
+
+
+% ------------
+% -- Sunday --
+% ------------
+\newpage
+\section{Sunday July 7th: Tutorials}
+\input{days/sunday_7_7_19.tex}
+
+
+
+% ------------
+% -- Monday --
+% ------------
+\newpage
+\section{Monday July 8th: Main Conference}
+%\input{days/monday_7_10_19.tex}
+
+
+
+% ------------
+% -- Tuesday --
+% ------------
+\newpage
+\section{Tuesday July 9th: Main Conference}
+%\input{days/sunday_7_10_19.tex}
+
+
+% --------------
+% -- Thursday --
+% --------------
+\newpage
+\section{Wednesday July 10th: Main Conference and Workshops}
+
+
+
+
+
+% --- Bibliography ---
+\newpage
+\bibliographystyle{plainnat}
+\bibliography{rldm}
+
+\end{document}
