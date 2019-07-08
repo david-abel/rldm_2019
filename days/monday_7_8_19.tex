@@ -789,7 +789,7 @@ $\ra$ Do VI over the MDP induced by the RM to compute a nice shaped reward funct
 
 Note that HRL methods can find suboptimal policies by only optimizing locally. \\
 
-{\bf Experiments:} two domains with discrete state-action spaces, some minecraft like problem, and a continuous state space. \\
+{\bf Experiments:} two domains with discrete state-action spaces, some minecraft like problem, and a continuous state space.
 
 \begin{enumerate}
 \item Office domain (patrol task): QRM learns extremely quickly, HRL+RM also learns quite quickly.
@@ -817,16 +817,57 @@ $\ra$ Employ explicit high-level model to describe abstract actions, use abstrac
 
 \item A3: Learn them from data.
 
-$\ra$ 
+$\ra$ Find a policy that maximizes the collected external reward given by a partially observable environment.
+
+$\ra$ Key insight: learn an RM such that its internal state can be effectively used as external memory by the agent to solve the task.
+
+\end{enumerate}
+
+Summary:
+\begin{itemize}
+    \item Main Q: can exploiting the alphabet and structure of language help RL agents learn and think?
+    \item Key insight: reveal reward function to the agent (via reward machines)
+    \item Using RMs can serve as a normal form representation for reward functions.
+\end{itemize}
+
+\spacerule
+
+
+\subsection{Poster Spotlights}
+
+Next up we have quick poster spotlights (two minute talks):
+\begin{enumerate}
+\item Kearney et al.: Making meaning: Semiotics within predictive
+knowledge architectures.
+
+$\ra$ Study of signs and symbols (semiotics) could inform the analysis and design of predictive knowledge architectures.
+
+\item Holland et al.: The effect of planning shape on Dyna-style
+planning in high-dimensional state spaces.
+
+$\ra$ Given limited resources, how do we use the model to perform updates that are most effective?
+
+\item Song et al.: Not smart enough: most rats fail to learn a
+parsimonious task representation.
+
+$\ra$ Can animals (rats) learn shared reward structure and use it for faster learning and better decisions? Short answer: No, they can't!
+
+\item P{\" a}rnamets et al.: Learning strategies during repeated
+spontaneous and instructed social avoidance learning.
+
+$\ra$ two questions: 1) how do people learn from social partners, and 2) how is this learned information used?
+
+\item Islam et al.: Doubly robust estimators in off-policy actor critic algorithms.
+
+$\ra$ Despite being sample efficient, off-policy learning can suffer from high variance. This work: extend doubly robust estimation to off-policy actor-critic to achieve low variance estimates in critic evaluation.
 
 \end{enumerate}
 
 
+And that's a wrap for Monday!
 
 
-
-
-
+\spacerule
 
 
 
