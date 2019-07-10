@@ -1,0 +1,357 @@
+I missed the first two talks.
+
+\subsection{Anna Harutyunyan on The Termination Critic}
+
+Joint work with Will Dabney, Diana Borsa, Nicolas Heess Remi Munos, and Doina Precup. \\
+
+{\bf Focus:} {\it Temporal} abstraction---the ability to reason at multiple time scales. \\
+
+Example: Trip from London to Montreal; can be described at different levels of detail (how long did the flight take? what did you do on the flight? the taxi? and so on). \\
+
+Q: How can we get our agents to reason in this way? \\
+
+$\ra$ Before we answer {\it how}, let's answer the {\it why}. \\
+
+Q: Why abstraction? \\
+
+A: It's much easier to reuse abstract pieces rather than specific pieces. This reusability allows for quick generalization to new situations. \\
+
+$\ra$ Generalization is hard to measure directly, and definitely hard to measure online. \\
+
+\dbox{{\bf This Work:} What are the related inductive biases we can use to optimize online. {\bf Contributions:}
+\begin{enumerate}
+    \item Way to encode inductive biases into option discovery
+    \item Form a new objective related to generalization.
+\end{enumerate}}
+
+The formalism: {\it options}~\cite{sutton1999between} (see definitions from yesterday).\\
+
+$\ra$ Most folks focus on the option policy $\pi_o$, but this work focuses on the {\it termination} condition:
+\[
+\beta_0 : \mc{S} \ra [0,1].
+\]
+
+Option critic~\cite{bacon2017option} defined an optimization scheme for learning options in a policy gradient like manner. Follow up work introduced the {\it deliberation cost} which sought to regularize the option length~\cite{harb2018waiting}. \\
+
+$\ra$ This work: separate these objectives entirely! \\
+
+Q: How do we specify and optimize objectives in this way? \\
+
+A: Well, let's consider the default:
+\[
+\min_\beta J(\beta),
+\]
+for some objective $J$. \\
+
+To study this, let's look at the option transition model:
+\[
+\Pr(y \mid x, o),
+\]
+defines the probability of an option going from $x$ to $y$ and terminating. \\
+
+Q: Can we specify/think about objectives based on this option model, but optimize with respect to the more myopic/one-step $\beta$? \\
+
+A: Main result of the paper: ``Termination Gradient Theorem"
+
+\begin{theorem}
+Intuitively, the TG theorem lets us specify arbitrary objectives via this option model! That is, with:
+\[
+\Pr(y\ mid x) = \indic\{x=y\} \beta_y^o + (1-\beta_x^o) \sum-{x'} p^{\pi_o}(x' \mid x) \Pr(y \mid x')
+\]
+the gradient w.r.t. the termination condition is:
+\[
+\nabla_{\theta,\beta} \Pr(y \mid x, o) = \sum_x \Pr(x' \mid x) \nabla_{\theta,\beta} \log \beta^o(x) r_{x}^o(x').
+\]
+\end{theorem}
+
+Q: Now that we know how (the TG theorem), what do we then want to optimize? \\
+
+A: Well, we want options that are predictable/simple (that is, have a small region of termination). \\
+
+Together, these two insights yield the {\it termination critic}. So, two ingredients: 
+
+\begin{enumerate}
+    \item Termination gradient theorem, let's us relate one step updates of $\beta$ to more global option model
+    
+    $\ra$ Really a general tool for encoding inductive biases into option discovery.
+    
+    \item Use this theorem to find options that are predictable/simple.
+\end{enumerate}
+
+Experiments:
+\begin{itemize}
+    \item Explore different termination conditions discovered, along with option policies.
+    \item Contrast Option-Critic vs. Termination-Critic both qualitatively (what do the termination conditions look like?) and more quantitatively (how do they impact learning?)
+    \item Main focus, though: does the TC help generalization?
+    
+    $\ra$ Explore how well objective correlates with generalization.
+    
+    $\ra$ Finding: TC optimizes the objective well and achieves generalization!
+\end{itemize}
+
+{\bf Thoughts to leave with:} what are the things you want out of the option you care about? Generalization, credit assignment, exploration? Let's think about ways to inject these criteria into our objectives/optimization via weak inductive biases.
+
+\spacerule
+
+
+\subsection{Pierre-Yves Oudeyer on Intrinsically Motivated Goal Exploration}
+
+\dnote{I actually took notes on Pierre-Yves' excellent keynote at ICLR 2019 on a similar topic, so I will sit out note taking here. (See Section 4.1 at \url{https://david-abel.github.io/notes/iclr_2019.pdf})}
+
+\spacerule
+
+\subsection{Marcelo Mattar on Memory Mechanisms Predict Sampling Biases}
+
+Joint work with Deborah Talmi, Mate Lengyel, and Nathaniel Daw. \\
+
+Q: How do people choose between different options? \\
+
+A: Well, one theory says we look back at our past experiences and make the decisions based on which one worked out better in the past. \\
+
+Literature A: Other suggestions based on neural data and computational models: decisions based on individual memories, hippocampus is involved, and so on. \\
+
+But! Previous work focuses on {\it bandit tasks} not sequential tasks. \\
+
+{\bf This Work:} extend these studies to the sequential case, introduce an algorithmic framework for understanding episodic memory and its role in decisions. \\
+
+$\ra$ First insight: use the successor representation (see Section~\ref{sec:sr}) to flatten the tree of future states. This then turns in sequential problem into a sequential problem. \\
+
+Simulation: dropping a ball into a grid of pegs, inspect the frequency with which balls occupy different regions (roughly define the successor representation). Then can do Monte Carlo sampling (using the SR) to compute values:
+\begin{itemize}
+    \item SR flattens set of future situations, turning it into a bandit like problem.
+    \item Avoids issues like depth/breath-first pruning
+    \item Predicts the statistics of human choices in sequential tasks as reflecting a small sample from potential outcomes.
+\end{itemize}
+
+Beyond computational considerations: this framework suggests a connection between planning and value retrieval in people.\\
+
+$\ra$ Insights from human episodic memory
+\begin{itemize}
+    \item Classical view: Temporal Context Model (describes which words people remember and when).
+    
+    \item Associations from context correspond to the SR~\cite{gershman2012successor}
+\end{itemize}
+
+Three new predictions from the new model:
+\begin{enumerate}
+    \item {\bf Sequential retrieval:} study from~\citet{preston2013interplay}
+    
+    $\ra$ Can roughly treat memory retrieval as rollouts via the SR (repeatedly draw samples from the SR). For short horizons, retrieval is a conventional rollout.
+    
+    \item {\bf Emotional modulation:} emotion tends to enhance memory!
+    
+    $\ra$ Elevate ``recall" rate with more impactful/rewarding states in simulation.
+    
+    $\ra$ Biases the simulation toward most relevant outcomes.
+    
+    $\ra$ Arrive at similar conclusion to \citet{lieder2019resource} but from the perspective of memory.
+    \item {\bf Asymmetry in contiguity effect:} TCM can account for background jumps, but in this regime sampling no longer comes from the SR!
+    
+    $\ra$ State transitions are often symmetric, but on-policy state transitions are directed.
+
+\end{enumerate}
+
+{\bf Summary:}
+\begin{itemize}
+    \item Episodic sampling can be used to compute decision variables in sequential tasks.
+    \item Correspondence with memory retrieval reveals several biases that have useful consequences for evaluation.
+    \item Suggestion that brain rapidly computes decision variables.
+\end{itemize}
+
+\spacerule
+
+
+\subsection{Katja Hoffman on Multitask RL and the MineRL Competition}
+
+Backdrop: multitask learning is easy for people! Consider people learning to drive a car: it takes people about 45 hours of lessons plus 22 hours of practicing. \\
+
+$\ra$ Once you know how to drive one car, you can adapt to other cars very quickly (potentially just minutes). \\
+
+{\bf Central Question:} How to achieve efficient multitask RL in artificial agents?
+
+\subsubsection{Fast Adaptation in Multi-task RL}
+
+Problem formulation:
+\begin{itemize}
+    \item Given: distribution over training and test tass, $p_\tx{train}$ and $p_\tx{test}$.
+    \item During meta-training sample $T_i \sim p_{\tx{train}}$.
+    \item Then, test on samples $T_j \sim p_{\tx{test}}$.
+    
+    $\ra$ Assuming: MDP share low dimensional task embedding that influences all of the different tasks (if agent knew it, would be able to predict transition/reward function very well. So, reward: $R(s,a;m)$, with $m$ the latent variable.
+    
+    $\ra$ MDPs share same state space, action space.
+\end{itemize}
+
+One approach: model-based control with latent task embedding~\cite{saemundsson2018meta}, with:
+\[
+m_i \sim N(\mu^i, \Sigma^i),
+\]
+and learn the dynamics model:
+\[
+s_{t+1}^i = f(s_t^i, a_t^i, m^i) + \eps.
+\]
+With Gaussian Process prior on $f$. During training: jointly optimize parameters of $f$ and $m_i$ using variational inference. \\
+
+$\ra$ Inference: update posterior over $m_i$ (inference task). \\
+
+{\bf (Toy) Experiment 1:} multi-task prediction. Find the approach: 1) automatically disentangles shared and task specific structure from training data, 2) maintains sensible uncertainty estimates, 3) generalizes to test tasks given limited test data. \\
+
+{\bf Experiment 2:} Cart-pole (multi-task variant). Systems vary in mass $m$ and pendulum length $\ell$. Some training tasks with different settings $\ell \in [.5, .7]$, and $m \in [.4,.9]$. 
+
+$\ra$ Findings: ML-GP works extremely well at adapting quickly to unseen cart-pole instances. \\
+
+In short: latent variable model proposed can effectively encode and make use of prior knowledge about task structure. \\
+
+\subsubsection{CAVIA: Fast Context Adaptation via Meta-learning}
+
+Next aim: flexible, fast adaptation. Starting point is MAML~\cite{finn2017model}. New 2-step gradient approach (CAVIA) on batch of tasks
+\begin{enumerate}
+    \item  Inner loop: training optimization
+    \[
+    \theta_i' = \theta - \alpha \nabla_\theta L_{T_i}(f_\theta)
+    \]
+    \item Outer Loop: testing optimization
+    \[
+    \theta_i' = \theta - \beta \nabla_\theta L_{T_i=j}(f_\theta)
+    \]
+\end{enumerate}
+
+$\ra$ Insight: no need to update all model parameters at test time. Many tasks and current benchmarks only require task identification. Many parameters and few data points can lead to overfitting. \\
+
+CAVIA: Fast Context Adaptation via Meta-learning~\cite{zintgraf2019fast}. \\
+\begin{itemize}
+    \item Task embedding: learning implicitly through context parameters $\phi$.
+    \item Training follows MAML/policy gradient.
+    \item Experiments on Half-Cheetah (run in the appropriate direction)
+    
+    $\ra$ Finding: model learns a sensible task embedding after a small number of inner loop optimizations. Yields sample efficient adaptation/learning to this (very) challenging task.
+    
+    \item Thus: with gradient based meta-learning, this learning of task-specific embeddings can yield interpretable task embedding that require only context-parameter updates at test time.
+\end{itemize}
+
+
+\subsubsection{VATE: Full Online Adaptation and Exploration}
+
+
+{\bf Goal:} Full online adaptation. CAVIA is flexible! But, requires entire trajectory before adapting to a new task. \\
+
+$\ra$ Challenge: retain flexibility and full online adaptation. \\
+
+Example: multi-task gridworld. Goal is to find and navigate to a moving target (location changes every 3 trials). \\
+
+$\ra$ Requires some structured exploration! \\
+
+New Algorithm: VATE (combines model-based and model-free elements):
+\begin{itemize}
+    \item Task embedding $m_i$ is a stochastic latent variable inferred from trajectory $\tau = (s_0, a_0, r_0, \ldots)$.
+    \item Explicitly condition on $m_i$: $T(s' \mid s,a;m)$ and $R(s,a,s';m)$
+    \item Results on the multi-task grid: VATE yields strategic exploration on these problems (especially contrasted to typical RNN policy without model-based component).
+    
+    $\ra$ Model-based component is useful for quickly adapting to/tracking the goal location.
+    \item Results on exploration in half-cheetah: by episode two(!), cheetah already moves toward the target.
+    
+    $\ra$ VATE learns to trade off exploration and exploitation online while interacting with the environment. VATE can deduce information about the task even before seeing reward.
+\end{itemize}
+
+
+
+
+\subsubsection{MineRL: Competition on Sample Efficient RL w/ Human Priors}
+
+
+New Competition: agent must obtain a diamond in a randomly generated Minecraft world given 4 days of training and a huge dataset (60 million $(s,a)$ pairs) of data from people playing the game (and collecting diamonds). \\
+
+Competition overview:
+\begin{itemize}
+    \item 9000 downloads of the minerl competition python package.
+    \item First round ends September 22 (2019)
+    \item Final round will be run entirely on Microsoft servers, agents will be trained on a fresh run of four days of training. 
+    \item Randomly generated world, so agents must generalize.
+    \item Competition website: \url{https://minerl.io/competition}.
+    \item Winners present their results at the NeurIPS competition track.
+    \item Based on Project Malmo~\cite{johnson2016malmo}.
+\end{itemize}
+
+{\bf Summary:}
+\begin{itemize}
+    \item Guiding Q: How can we achieve efficient multitask RL in artificial agents?
+    \item Proposed one framework based on low dimensional task embeddings that modulates major aspects of the relevant MDPs.
+    \item Further presented CAVIA, a flexible method for adaptation to new/similar tasks, and VATE, which can perform strategic exploration
+    \item Concluded with the MineRL (``mineral") competition at NeurIPS 2019.
+\end{itemize}
+
+\spacerule
+
+\subsection{Mike Bowling on Can A Game Demonstrate Theory of Mind?}
+
+{\bf This Talk:} One game! Let's talk about this one game. And help everyone get inside of it and give us insight into what's missing in AI. \\
+
+$\ra$ But, it's hard to articulate the game. So let's just watch first. \\
+
+\ddef{Theory of Mind (wikipedia)}{The ability to attribute mental states (beliefs, intentes, desires) to oneself and others and to understand that others have beliefs, desirs, intetnions that are different from one's own.}
+
+Q: How many people know the game Hanabi? \\
+
+A: A lot of people! \\
+
+Q: What do we do when playing Hanabi? Well, let's start: can you count to five? \\
+
+A: Yes! \\
+
+Q: Okay, but what if we multitask and count multiple times? \\
+
+A: Five stacks of cards, always have to add one card to one stack that increments the previous number. \\
+
+Q: Blue 3 after a blue 1? (color denotes the stack) \\
+
+A: Nope! A strike. You get three strikes. \\
+
+Reset: let's keep counting. Goal is to count to five, five times, can multitask, need less than three strikes. \\
+
+Rules:
+\begin{itemize}
+    \item Three strikes and the team loses.
+    \item Five stacks, one color card for each stack.
+    \item {\bf Win condition:} Counted to five.
+    \item Each player (cooperative) gets a hand of four cards.
+    \item Everyone can see the other cards but not their own.
+    \item Take turns doing one of three things:
+    \begin{enumerate}
+        \item {\bf Play a Card:} Adding a card to one pile.
+        \item {\bf Information Token:} A turn could also be using an information token to indicate a color/number of a particular card (or rule: these cards are all red, these cards are all twos).
+    
+        $\ra$ 8 tokens total to use (across the entire team).
+    
+        \item {\bf Remove Card:} Remove a card from the game to get an information token.
+    \end{enumerate}
+    \item At end of turn can draw a new card.
+    \item 50 total cards.
+
+\end{itemize}
+
+So, let's play a game; (demo of a game on the slides). \\
+
+
+Example: ``My friend has glasses" given three faces: a smiley face, a smiley face with glasses, and a smiley face with a hat AND glasses. \\
+
+$\ra$ We know the ``my friend has glasses" refers to the middle face! If they wanted to refer to the right one, they would have mentioned ``the hat". (theory of mind!) \\
+
+**Making use of this kind of communicative strategy is critical(!) to Hannabi. \\
+
+Really interesting point: learning information about a card (so one player telling us ``that one is yellow") actually {\it decreases} the likelihood the card is playable in some situations, even though almost always a player would mention a card is yellow so that you know to play it! Lots of interesting interplay here. \\
+
+One idea: throw deep RL at Hannabi! Let's do it and see what happens.
+\begin{itemize}
+    \item We don't actually know what optimal score is: some games it's 25 (count all five stacks up to 25) but some decks don't allow for 25.
+    \item Beginners tend to get around high teens, so difference between 18-23 or so is actually really critical.
+    \item Threw some deep RL (10,000 years of playing Hannabi per agent in the population) at it, achieve a score of 22.7.
+    \item But! Rule based agent: achieves score of 23.
+\end{itemize}
+
+\dnote{This talk was amazing -- really hard to capture via notes as it was mostly an interactive demo of the crowd playing Hannabi through the slides with Mike adding lots of wonderful commentary. I wish there was a recording!}
+
+Paper with more details by~\citet{bard2019hanabi}. 
+
+\spacerule
+
+\dnote{That's a wrap for Tuesday}
